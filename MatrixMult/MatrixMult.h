@@ -4,13 +4,13 @@
 #ifndef MATRIXMULT_H
 #define MATRIXMULT_H
 
-long* multiply_matrices(long* matrix1, long* matrix2, int matrix1_rows, int matrix2_rows, int matrix1_cols, int matrix2_cols){
+double* multiply_matrices(double* matrix1, double* matrix2, int matrix1_rows, int matrix2_rows, int matrix1_cols, int matrix2_cols){
     if (matrix1_cols != matrix2_rows) {
         std::cerr << "Error: Columns in matrix1 must match rows in matrix2." << std::endl;
         return nullptr;
     }
 
-    long* result = new long[matrix1_rows * matrix2_cols];
+    double* result = new double[matrix1_rows * matrix2_cols];
 
     for (int i = 0; i < matrix1_rows; ++i) {
         for (int j = 0; j < matrix2_cols; ++j) {
@@ -26,8 +26,8 @@ long* multiply_matrices(long* matrix1, long* matrix2, int matrix1_rows, int matr
 
 
 // Uses Gaussian Elimination with Partial Pivoting to find the inverse of a matrix
-long* inverseMatrix(long* matrix, int size) {
-    long* result = new long[size * size];
+double* inverseMatrix(double* matrix, int size) {
+    double* result = new double[size * size];
 
     for (int i = 0; i < size; ++i) {
         for (int j = 0; j < size; ++j) {
@@ -75,8 +75,8 @@ long* inverseMatrix(long* matrix, int size) {
     return result;
 }
 
-long* transposeMatrix(long* matrix, int rows, int cols) {
-    long* result = new long[rows * cols];
+double* transposeMatrix(double* matrix, int rows, int cols) {
+    double* result = new double[rows * cols];
 
     for (int i = 0; i < rows; ++i) {
         for (int j = 0; j < cols; ++j) {
