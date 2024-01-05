@@ -14,9 +14,8 @@ typedef struct {
 
 } KFState;
 
-KFState initialize(int statevector_size, int measurement_size, int control_size, double* initial_state, double* initial_control){
- 
-}
+KFState initialize(int statevector_size, int measurement_size, int control_size, double* initial_state, double* initial_control);
+
 void predict_state(KFState *state){
 
 }
