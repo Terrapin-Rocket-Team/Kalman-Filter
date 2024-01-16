@@ -124,7 +124,7 @@ double* iterate(KFState *state, float dt, double* measurement_vector, double* co
     } else {
         state->H = new double[18]{0, 0, 0, 0, 0, 0,
                             0, 0, 0, 0, 0, 0,
-                            0, 0, 0, 0, 0, 0};
+                            0, 0, 1, 0, 0, 0};
     }
     
     state->Q = multiplyMatrices((*state).G, multiplyByScalar(transposeMatrix((*state).G, 6, 3), 18, 1.5*1.5), 6, 3, 3, 6);
