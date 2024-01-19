@@ -1,12 +1,11 @@
-#include <iostream>
-#include <cmath>
-
 #ifndef MATRIXMULT_H
 #define MATRIXMULT_H
 
+#include <Arduino.h>
+
 double* multiplyMatrices(double* matrix1, double* matrix2, int matrix1_rows, int matrix1_cols, int matrix2_rows, int matrix2_cols){
     if (matrix1_cols != matrix2_rows) {
-        std::cerr << "Error: Columns in matrix1 must match rows in matrix2." << std::endl;
+        Serial.println("Error: Columns in matrix1 must match rows in matrix2.");
         return nullptr;
     }
 
@@ -38,20 +37,27 @@ double* inverseMatrix(double* matrix, int size) {
     for (int i = 0; i < size; ++i) {
         int pivotRow = i;
         for (int j = i + 1; j < size; ++j) {
-            if (std::abs(matrix[j * size + i]) > std::abs(matrix[pivotRow * size + i])) {
+            if (abs(matrix[j * size + i]) > abs(matrix[pivotRow * size + i])) {
                 pivotRow = j;
             }
         }
 
         if (matrix[pivotRow * size + i] == 0.0) {
-            std::cerr << "Error: Matrix is singular, cannot calculate inverse." << std::endl;
+            Serial.println("Error: Matrix is singular, cannot calculate inverse.");
             return nullptr;
         }
 
         if (pivotRow != i) {
             for (int k = 0; k < size; ++k) {
-                std::swap(matrix[i * size + k], matrix[pivotRow * size + k]);
-                std::swap(result[i * size + k], result[pivotRow * size + k]);
+                // Manually swap matrix elements
+                double tempMatrix = matrix[i * size + k];
+                matrix[i * size + k] = matrix[pivotRow * size + k];
+                matrix[pivotRow * size + k] = tempMatrix;
+
+                // Manually swap result elements
+                double tempResult = result[i * size + k];
+                result[i * size + k] = result[pivotRow * size + k];
+                result[pivotRow * size + k] = tempResult;
             }
         }
 

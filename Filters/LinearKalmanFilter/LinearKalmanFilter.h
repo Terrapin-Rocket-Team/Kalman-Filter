@@ -1,4 +1,4 @@
-#include "MatrixMult.h"
+#include "../../MatrixMult/MatrixMult.h"
 
 #ifndef LINEARKALMANFILTER_H
 #define LINEARKALMANFILTER_H
@@ -30,6 +30,6 @@ void covariance_extrapolate(KFState *state);
 
 void calculate_initial_values(KFState *state, float dt);
 
-double* iterate(KFState *state, float dt, double* measurement_vector, double* control_vector);
+double* iterate(KFState *state, float dt, double* measurement_vector, double* control_vector, bool has_gps);
 
 #endif
