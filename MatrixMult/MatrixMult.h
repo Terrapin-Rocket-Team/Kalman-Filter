@@ -43,7 +43,7 @@ double* inverseMatrix(double* matrix, int size) {
         }
 
         if (matrix[pivotRow * size + i] == 0.0) {
-            Serial.println("Error: Matrix is singular, cannot calculate inverse.");
+            //Serial.println("Error: Matrix is singular, cannot calculate inverse.");
             return nullptr;
         }
 

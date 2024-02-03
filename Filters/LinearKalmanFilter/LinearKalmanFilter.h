@@ -18,18 +18,18 @@ typedef struct {
 
 KFState initialize(int statevector_size, int measurement_size, int control_size, double* initial_state, double* initial_control);
 
-void predict_state(KFState *state);
+KFState predict_state(KFState state);
 
-void estimate_state(KFState *state, double *measurement);
+KFState estimate_state(KFState state, double *measurement);
 
-void calculate_kalman_gain(KFState *state);
+KFState calculate_kalman_gain(KFState state);
 
-void covariance_update(KFState *state);
+KFState covariance_update(KFState state);
 
-void covariance_extrapolate(KFState *state);
+KFState covariance_extrapolate(KFState state);
 
-void calculate_initial_values(KFState *state, float dt);
+KFState calculate_initial_values(KFState state, float dt);
 
-double* iterate(KFState *state, float dt, double* measurement_vector, double* control_vector, bool has_gps);
+KFState iterate(KFState state, float dt, double* measurement_vector, double* control_vector, bool has_gps);
 
 #endif
