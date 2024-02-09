@@ -13,6 +13,8 @@ typedef struct {
     double* Q; // Process Noise Matrix
     double* U; // Control Vector
     double* X; // State Vector
+    int n;     // State Vector Length
+    int m;     // Measurement Vector Length
 } KFState;
 
 KFState initialize(int statevector_size, int measurement_size, int control_size, double* initial_state, double* initial_control);
