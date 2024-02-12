@@ -10,13 +10,15 @@ KFState initialize(int statevector_size, int measurement_size, int control_size,
                             0, 0, 0, 100, 0, 0,
                             0, 0, 0, 0, 100, 0,
                             0, 0, 0, 0, 0, 100};
+    state.K = new double;
+    state.Q = new double;
     state = calculate_initial_values(state, 0.05);
     return state;
 }
 KFState predict_state(KFState state){
     double* inter1 = multiplyMatrices(state.F, state.X, 6, 6, 6, 1);
     double* inter2 = multiplyMatrices(state.G, state.U, 6, 3, 3, 1);
-    //delete[] state.X;
+    delete[] state.X;
     state.X = addMatrices(inter1, inter2, 6, 1);
     delete[] inter1;
     delete[] inter2;
@@ -54,30 +56,6 @@ KFState calculate_kalman_gain(KFState state){
     return state;
 }
 KFState covariance_update(KFState state){
-    // state.P = addMatrices(
-    //         multiplyMatrices(
-    //             multiplyMatrices(
-    //                 subMatrices(ident(6), multiplyMatrices(state.K, state.H, 6, 3, 3, 6), 6, 6),
-    //                 state.P,
-    //                 6, 6, 6, 6
-    //             ),
-    //             transposeMatrix(
-    //                 subMatrices(
-    //                     ident(6),
-    //                     multiplyMatrices(state.K, state.H, 6, 3, 3, 6),
-    //                     6, 6
-    //                 ),
-    //                 6, 6
-    //             ),
-    //             6, 6, 6, 6
-    //         ),
-    //         multiplyMatrices(
-    //             multiplyMatrices(state.K, state.R, 6, 3, 3, 3),
-    //             transposeMatrix(state.K, 6, 3),
-    //             6, 3, 3, 6
-    //         ),
-    //         6, 6
-    //     );
         double* inter1 = ident(6);
         double* inter2 = multiplyMatrices(state.K, state.H, 6, 3, 3, 6);
         double* inter3 = subMatrices(inter1, inter2, 6, 6);
@@ -101,23 +79,10 @@ KFState covariance_update(KFState state){
         return state;
 }
 KFState covariance_extrapolate(KFState state){
-    // state.P = addMatrices(
-    //     multiplyMatrices(
-    //         multiplyMatrices(
-    //             state.F,
-    //             state.P,
-    //             6, 6, 6, 6
-    //         ),
-    //         transposeMatrix(state.F, 6, 6),
-    //         6, 6, 6, 6
-    //     ),
-    //     state.Q,
-    //     6, 6
-    // );
     double* inter1 = transposeMatrix(state.F, 6, 6);
     double* inter2 = multiplyMatrices(state.F, state.P, 6, 6, 6, 6);
     double* inter3 = multiplyMatrices(inter2, inter1, 6, 6, 6, 6);
-    //delete[] state.P;
+    delete[] state.P;
     state.P = addMatrices(inter3, state.Q, 6, 6);
     delete[] inter1;
     delete[] inter2;
@@ -137,10 +102,10 @@ KFState calculate_initial_values(KFState state, float dt){
                             dt, 0, 0,
                             0, dt, 0,
                             0, 0, dt};
-    //state.Q = multiplyMatrices(state.G, multiplyByScalar(transposeMatrix(state.G, 6, 3), 18, 0.2*0.2), 6, 3, 3, 6);
+
     double* inter1 = transposeMatrix(state.G, 6, 3);
     double* inter2 = multiplyByScalar(inter1, 18, 0.2*0.2);
-    //delete[] state.Q;
+    delete[] state.Q;
     state.Q = multiplyMatrices(state.G, inter2, 6, 3, 3, 6);
     delete[] inter1;
     delete[] inter2;
@@ -170,7 +135,6 @@ KFState iterate(KFState state, float dt, double* measurement_vector, double* con
                             0, 0, 0, 0, 0, 0,
                             0, 0, 1, 0, 0, 0};
     }
-    //state.Q = multiplyMatrices(state.G, multiplyByScalar(transposeMatrix(state.G, 6, 3), 18, 1.5*1.5), 6, 3, 3, 6);
     double* inter1 = transposeMatrix(state.G, 6, 3);
     double* inter2 = multiplyByScalar(inter1, 18, 1.5*1.5);
     delete[] state.Q;
