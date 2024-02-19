@@ -1,5 +1,5 @@
 format long
-data = readtable('L1_Drift_Control_Test_2-3-24.csv');
+data = readtable('data/L1_Drift_Control_Test_2-3-24.csv');
 
 
 offset = 49961;
