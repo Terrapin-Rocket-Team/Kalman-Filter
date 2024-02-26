@@ -12,8 +12,7 @@ void printMatrix(double* matrix, int rows, int cols) {
 
 int main() {
     const int size = 5;
-    double matrix1[9] = {1, 2, 3, 4, 5, 6, 7, 8, 9
-    };
+    double matrix1[9] = {1, 2, 3, 4, 5, 6, 7, 8, 9};
 
     double matrix2[size * size] = {
         25, 24, 23, 22, 21,
@@ -40,7 +39,7 @@ int main() {
     // // Test inverseMatrix
     double* inv_result = inverseMatrix(matrix1, 3);
     if (inv_result != nullptr) {
-        std::cout << "Inverse of Matrix 1:" << std::endl;
+        std::cout << "Inverse of Matrix 1asd:" << std::endl;
         printMatrix(inv_result, 3, 3);
         std::cout << std::endl;
     }

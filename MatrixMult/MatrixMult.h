@@ -6,8 +6,10 @@
 
 double* multiplyMatrices(double* matrix1, double* matrix2, int matrix1_rows, int matrix1_cols, int matrix2_rows, int matrix2_cols);
 
+void solveLU(double* A, int* pivot, double* b, double* x, int n);
 
-// Uses Gaussian Elimination with Partial Pivoting to find the inverse of a matrix
+void luDecompositionWithPartialPivoting(double* A, int* pivot, int n);
+
 double* inverseMatrix(double* matrix, int size);
 
 double* transposeMatrix(double* matrix, int rows, int cols);

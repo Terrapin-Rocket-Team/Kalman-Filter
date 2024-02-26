@@ -24,54 +24,90 @@ double* multiplyMatrices(double* matrix1, double* matrix2, int matrix1_rows, int
 
 
 // Uses Gaussian Elimination with Partial Pivoting to find the inverse of a matrix
-double* inverseMatrix(double* matrix, int size) {
-    double* result = new double[size * size];
-
-    for (int i = 0; i < size; ++i) {
-        for (int j = 0; j < size; ++j) {
-            result[i * size + j] = (i == j) ? 1.0 : 0.0;
-        }
+void luDecompositionWithPartialPivoting(double* A, int* pivot, int n) {
+    for (int i = 0; i < n; ++i) {
+        pivot[i] = i;
     }
 
-    for (int i = 0; i < size; ++i) {
-        int pivotRow = i;
-        for (int j = i + 1; j < size; ++j) {
-            if (std::abs(matrix[j * size + i]) > std::abs(matrix[pivotRow * size + i])) {
-                pivotRow = j;
+    for (int i = 0; i < n; ++i) {
+        // Partial pivoting
+        double max = std::abs(A[i*n + i]);
+        int maxRow = i;
+        for (int k = i + 1; k < n; ++k) {
+            if (std::abs(A[k*n + i]) > max) {
+                max = std::abs(A[k*n + i]);
+                maxRow = k;
             }
         }
 
-        if (matrix[pivotRow * size + i] == 0.0) {
+        if (max == 0.0) {
             std::cerr << "Error: Matrix is singular, cannot calculate inverse." << std::endl;
-            return nullptr;
+            return;
         }
 
-        if (pivotRow != i) {
-            for (int k = 0; k < size; ++k) {
-                std::swap(matrix[i * size + k], matrix[pivotRow * size + k]);
-                std::swap(result[i * size + k], result[pivotRow * size + k]);
-            }
+        // Swap rows in A matrix
+        for (int k = 0; k < n; ++k) {
+            std::swap(A[i*n + k], A[maxRow*n + k]);
         }
+        // Swap pivot indices
+        std::swap(pivot[i], pivot[maxRow]);
 
-        double pivot = matrix[i * size + i];
-        for (int j = 0; j < size; ++j) {
-            matrix[i * size + j] /= pivot;
-            result[i * size + j] /= pivot;
-        }
-
-        for (int j = 0; j < size; ++j) {
-            if (j != i) {
-                double factor = matrix[j * size + i];
-                for (int k = 0; k < size; ++k) {
-                    matrix[j * size + k] -= factor * matrix[i * size + k];
-                    result[j * size + k] -= factor * result[i * size + k];
-                }
+        // LU Decomposition
+        for (int j = i + 1; j < n; ++j) {
+            A[j*n + i] /= A[i*n + i];
+            for (int k = i + 1; k < n; ++k) {
+                A[j*n + k] -= A[j*n + i] * A[i*n + k];
             }
         }
     }
-
-    return result;
 }
+
+void solveLU(double* A, int* pivot, double* b, double* x, int n) {
+    // Forward substitution for Ly = Pb
+    for (int i = 0; i < n; ++i) {
+        x[i] = b[pivot[i]];
+        for (int j = 0; j < i; ++j) {
+            x[i] -= A[i*n + j] * x[j];
+        }
+    }
+
+    // Backward substitution for Ux = y
+    for (int i = n - 1; i >= 0; --i) {
+        for (int j = i + 1; j < n; ++j) {
+            x[i] -= A[i*n + j] * x[j];
+        }
+        x[i] /= A[i*n + i];
+    }
+}
+
+double* inverseMatrix(double* A, int n) {
+    double* inverse = new double[n*n];
+    int* pivot = new int[n];
+    double* b = new double[n];
+    double* temp = new double[n];
+
+    luDecompositionWithPartialPivoting(A, pivot, n);
+
+    for (int i = 0; i < n; ++i) {
+        // Set up b vector for the i-th column
+        std::fill(b, b + n, 0.0);
+        b[i] = 1.0;
+
+        solveLU(A, pivot, b, temp, n);
+
+        // Copy the solution from temp to the correct column in inverse
+        for (int j = 0; j < n; ++j) {
+            inverse[j*n + i] = temp[j];
+        }
+    }
+
+    delete[] pivot;
+    delete[] b;
+    delete[] temp;
+
+    return inverse;
+}
+
 
 double* transposeMatrix(double* matrix, int rows, int cols) {
     double* result = new double[rows * cols];
