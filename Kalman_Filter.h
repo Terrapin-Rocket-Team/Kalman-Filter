@@ -6,4 +6,6 @@
 //Include all the filters
 #include "Filters/filters.h"
 
+#include "MatrixMult/Eigen/Dense"
+
 #endif

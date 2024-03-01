@@ -1,19 +1,25 @@
-#include "../../MatrixMult/MatrixMult.h"
+#include <ArduinoEigen.h>
+
+using Eigen::MatrixXd;
+using Eigen::Matrix;
+using Eigen::Vector;
+using Eigen::VectorXd;
 
 #ifndef LINEARKALMANFILTER_H
 #define LINEARKALMANFILTER_H
 
-typedef struct {
-    double* F; // State Transition Matrix
-    double* G; // Control Matrix
-    double* H; // Observation Matrix
-    double* P; // Estimate Covariance Matrix
-    double* R; // Measurement Uncertainty Matrix
-    double* K; // Kalman Gain Matrix
-    double* Q; // Process Noise Matrix
-    double* U; // Control Vector
-    double* X; // State Vector
-} KFState;
+
+struct KFState {
+    Vector<double, 6> X; // State vector
+    Vector<double, 3> U; // Control vector
+    Matrix<double, 6, 6> P; // State covariance matrix
+    Matrix<double, 6, 3> K; // Kalman gain matrix
+    Matrix<double, 6, 6> Q; // Process noise covariance matrix
+    Matrix<double, 3, 3> R; // Measurement noise covariance matrix
+    Matrix<double, 6, 6> F; // State transition matrix
+    Matrix<double, 6, 3> G; // Control input matrix
+    Matrix<double, 3, 6> H; // Measurement matrix
+};
 
 KFState initialize(int statevector_size, int measurement_size, int control_size, double* initial_state, double* initial_control);
 KFState predict_state(KFState state);
