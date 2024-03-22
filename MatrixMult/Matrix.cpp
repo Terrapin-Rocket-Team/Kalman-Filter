@@ -4,32 +4,42 @@
 // int rows -> number of rows of matrix
 // int cols -> number of columns of matrix
 // double[] array -> array of elements of matrix in column-major order
+//IMPORTANT: DO NOT modify array after use in constructor!
 Matrix::Matrix(int rows, int cols, double* array) {
   this->rows = rows;
   this->cols = cols;
   this->array = array;
 }
 
+//Destructor
 Matrix::~Matrix(){
   delete[] this->array;
 }
 
+//Gets #rows of the matrix
 int Matrix::getRows(){
   return this->rows;
 }
 
+//Gets #columns of the matrix
 int Matrix::getCols(){
   return this->cols;
 }
 
+//Overloads * operator to multiply two matrices
 Matrix Matrix::operator*(Matrix& other){
   return this->multiply(other);
 }
 
+//Overloads * operator to multiply a matrix and a scalar
+// Note: The scalar must be on the right hand side of the *
 Matrix Matrix::operator*(double scalar){
   return this->multiply(scalar);
 }
 
+//Multiply two matrices
+// Matrix& other -> matrix to multiply with
+// return -> the product
 Matrix Matrix::multiply(Matrix& other){
   if (this->cols != other.rows){
     std::cerr << "Multiplication error: Dimensions do not match!" << std::endl;
@@ -46,9 +56,12 @@ Matrix Matrix::multiply(Matrix& other){
     }
   }
 
-  return Matrix(this->rows, other.cols, result);
+  return Matrix(this->rows, other.cols, result); //returns product matrix
 }
 
+//Multiply a matrix and a scalar
+// double scalar -> scalar to multiply by
+// return -> the product
 Matrix Matrix::multiply(double scalar){
   double* result = new double[this->rows * this->cols];
 
@@ -56,13 +69,17 @@ Matrix Matrix::multiply(double scalar){
     result[i] = this->array[i] * scalar;
   }
 
-  return Matrix(this->rows, this->cols, result);
+  return Matrix(this->rows, this->cols, result); //returns product matrix
 }
 
+//Overloads the + operator to add two matrices
 Matrix Matrix::operator+(Matrix& other){
   return this->add(other);
 }
 
+//Add two matrices
+// Matrix& other -> matrix to add
+// return -> sum of matrices
 Matrix Matrix::add(Matrix& other){
   if(this->rows != other.rows || this->cols != other.cols){
     std::cerr << "Addition error: Dimensions do not match!" << std::endl;
@@ -74,13 +91,17 @@ Matrix Matrix::add(Matrix& other){
     result[i] = this->array[i] + other.array[i];
   }
 
-  return Matrix(this->rows, this->cols, result);
+  return Matrix(this->rows, this->cols, result); //returns sum matrix
 }
 
+//Overloads the - operator to subtract two matrices
 Matrix Matrix::operator-(Matrix& other){
   return this->subtract(other);
 }
 
+//Subtract two matrices
+// Matrix& other -> matrix to subtract
+// return -> difference of matrices
 Matrix Matrix::subtract(Matrix& other){
   if(this->rows != other.rows || this->cols != other.cols){
     std::cerr << "Subtraction error: Dimensions do not match!" << std::endl;
@@ -92,13 +113,16 @@ Matrix Matrix::subtract(Matrix& other){
     result[i] = this->array[i] - other.array[i];
   }
 
-  return Matrix(this->rows, this->cols, result);
+  return Matrix(this->rows, this->cols, result); //returns difference matrix
 }
 
+//Alias for transpose()
 Matrix Matrix::T(){
   return this->transpose();
 }
 
+//Transpose a matrix
+// return -> transposed matrix
 Matrix Matrix::transpose(){
   double* result = new double[this->rows * this->cols];
 
@@ -108,9 +132,10 @@ Matrix Matrix::transpose(){
     }
   }
 
-  return Matrix(this->cols, this->rows, result);
+  return Matrix(this->cols, this->rows, result); //returns transposed matrix
 }
 
+// From Avi's code to invert a matrix; copied verbatim
 void Matrix::luDecompositionWithPartialPivoting(double* A, int* pivot, int n) {
   for (int i = 0; i < n; ++i) {
     pivot[i] = i;
@@ -149,6 +174,7 @@ void Matrix::luDecompositionWithPartialPivoting(double* A, int* pivot, int n) {
   }
 }
 
+// From Avi's code to invert a matrix; copied verbatim
 void Matrix::solveLU(double* A, int* pivot, double* b, double* x, int n) {
   // Forward substitution for Ly = Pb
   for (int i = 0; i < n; ++i) {
@@ -167,22 +193,26 @@ void Matrix::solveLU(double* A, int* pivot, double* b, double* x, int n) {
   }
 }
 
+//Alias for inverse()
 Matrix Matrix::inv(){
   return this->inverse();
 }
 
+//Invert a matrix
+// return -> inverted matrix
 Matrix Matrix::inverse(){
   if(this->rows != this->cols){
     std::cerr << "Inversion error: Dimensions do not match!" << std::endl;
   }
 
-  int n = this->rows;
-  double* A = new double[n * n];
+  int n = this->rows; //at this point, n = rows = cols
+  double* A = new double[n * n]; //makes a copy of the array to avoid modification
   for (int i = 0; i < n * n; ++i){
     A[i] = this->array[i];
   }
 
-  double* inverse = new double[n * n];
+  //below code closely follows Avi's code
+  double* inverse = new double[n * n]; 
   int* pivot = new int[n];
   double* b = new double[n];
   double* temp = new double[n];
@@ -211,9 +241,10 @@ Matrix Matrix::inverse(){
   delete[] b;
   delete[] temp;
 
-  return Matrix(n, n, inverse);
+  return Matrix(n, n, inverse); //returns inverted matrix
 }
 
+//Get identity matrix of size [n n]
 Matrix Matrix::ident(int n){
   double* result = new double[n * n];
 
@@ -227,12 +258,14 @@ Matrix Matrix::ident(int n){
     }
   }
 
-  return Matrix(n, n, result);
+  return Matrix(n, n, result); //returns identity matrix
 }
 
-
+//Display matrix for debugging purposes
 void Matrix::disp(){
+  //prints each row of the matrix on a separate line
   for (int i = 0; i < this->rows; ++i){
+    //separates each column of the matrix by a space
     for (int j = 0; j < this->cols; ++j){
       std::cout << this->array[i * this->rows + j] << " ";
     }
