@@ -1,5 +1,12 @@
 #include "Matrix.h"
 
+//Default constructor
+Matrix::Matrix(){
+  this->rows = 0;
+  this->cols = 0;
+  this->array = nullptr;
+}
+
 //Constructor
 // int rows -> number of rows of matrix
 // int cols -> number of columns of matrix
