@@ -1,26 +1,32 @@
-#include "../../MatrixMult/MatrixMult.h"
+#include "../../MatrixMult/Matrix.h"
 
 #ifndef LINEARKALMANFILTER_H
 #define LINEARKALMANFILTER_H
 
 typedef struct {
-    double* F; // State Transition Matrix
-    double* G; // Control Matrix
-    double* H; // Observation Matrix
-    double* P; // Estimate Covariance Matrix
-    double* R; // Measurement Uncertainty Matrix
-    double* K; // Kalman Gain Matrix
-    double* Q; // Process Noise Matrix
-    double* U; // Control Vector
-    double* X; // State Vector
+    Matrix F; // State Transition Matrix
+    Matrix G; // Control Matrix
+    Matrix H; // Observation Matrix
+    Matrix P; // Estimate Covariance Matrix
+    Matrix R; // Measurement Uncertainty Matrix
+    Matrix K; // Kalman Gain Matrix
+    Matrix Q; // Process Noise Matrix
+    Matrix U; // Control Vector
+    Matrix X; // State Vector
 } KFState;
 
-KFState initialize(int statevector_size, int measurement_size, int control_size, double* initial_state, double* initial_control);
-KFState predict_state(KFState state);
-KFState estimate_state(KFState state, double *measurement);
-KFState calculate_kalman_gain(KFState state);
-KFState covariance_update(KFState state);
-KFState covariance_extrapolate(KFState state);
-KFState calculate_initial_values(KFState state, float dt);
-KFState iterate(KFState state, float dt, double* measurement_vector, double* control_vector, bool has_gps);
+class LinearKalmanFilter{
+    public: 
+        LinearKalmanFilter(Matrix X, Matrix U, Matrix P, Matrix F, Matrix G, Matrix R);
+        void predict_state();
+        void estimate_state(Matrix measurement);
+        void calculate_kalman_gain();
+        void covariance_update();
+        void covariance_extrapolate();
+        void calculate_initial_values();
+        Matrix iterate(Matrix measurement, Matrix control, Matrix F, Matrix G, Matrix H);
+    
+    private:
+        KFState state;
+};
 #endif
