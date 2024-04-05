@@ -7,7 +7,7 @@
 #include "Filters/filters.h"
 
 //Include Matrix Mult
-#include "MatrixMult/MatrixMult.h"
-#include "MatrixMult/MatrixMult.cpp"
+#include "MatrixMult/Matrix.h"
+#include "MatrixMult/Matrix.cpp"
 
 #endif

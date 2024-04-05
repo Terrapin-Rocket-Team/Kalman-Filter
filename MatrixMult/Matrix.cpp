@@ -23,6 +23,24 @@ Matrix::~Matrix(){
   delete[] this->array;
 }
 
+Matrix::Matrix(const Matrix& other) {
+    rows = other.rows;
+    cols = other.cols;
+    array = new double[rows * cols];
+    std::copy(other.array, other.array + rows * cols, array);
+}
+
+Matrix& Matrix::operator=(const Matrix& other) {
+    if (this != &other) { // self-assignment check
+        delete[] array; // free existing resource
+        rows = other.rows;
+        cols = other.cols;
+        array = new double[rows * cols];
+        std::copy(other.array, other.array + rows * cols, array);
+    }
+    return *this;
+}
+
 //Gets #rows of the matrix
 int Matrix::getRows(){
   return this->rows;
@@ -33,8 +51,12 @@ int Matrix::getCols(){
   return this->cols;
 }
 
+double* Matrix::getArr(){
+  return this->array;
+}
+
 //Overloads * operator to multiply two matrices
-Matrix Matrix::operator*(Matrix& other){
+Matrix Matrix::operator*(Matrix other){
   return this->multiply(other);
 }
 
@@ -45,9 +67,9 @@ Matrix Matrix::operator*(double scalar){
 }
 
 //Multiply two matrices
-// Matrix& other -> matrix to multiply with
+// Matrix other -> matrix to multiply with
 // return -> the product
-Matrix Matrix::multiply(Matrix& other){
+Matrix Matrix::multiply(Matrix other){
   if (this->cols != other.rows){
     std::cerr << "Multiplication error: Dimensions do not match!" << std::endl;
   }
@@ -80,14 +102,14 @@ Matrix Matrix::multiply(double scalar){
 }
 
 //Overloads the + operator to add two matrices
-Matrix Matrix::operator+(Matrix& other){
+Matrix Matrix::operator+(Matrix other){
   return this->add(other);
 }
 
 //Add two matrices
-// Matrix& other -> matrix to add
+// Matrix other -> matrix to add
 // return -> sum of matrices
-Matrix Matrix::add(Matrix& other){
+Matrix Matrix::add(Matrix other){
   if(this->rows != other.rows || this->cols != other.cols){
     std::cerr << "Addition error: Dimensions do not match!" << std::endl;
   }
@@ -102,14 +124,14 @@ Matrix Matrix::add(Matrix& other){
 }
 
 //Overloads the - operator to subtract two matrices
-Matrix Matrix::operator-(Matrix& other){
+Matrix Matrix::operator-(Matrix other){
   return this->subtract(other);
 }
 
 //Subtract two matrices
-// Matrix& other -> matrix to subtract
+// Matrix other -> matrix to subtract
 // return -> difference of matrices
-Matrix Matrix::subtract(Matrix& other){
+Matrix Matrix::subtract(Matrix other){
   if(this->rows != other.rows || this->cols != other.cols){
     std::cerr << "Subtraction error: Dimensions do not match!" << std::endl;
   }
@@ -232,12 +254,6 @@ Matrix Matrix::inverse(){
 
     this->solveLU(A, pivot, b, temp, n);
 
-    for (int g = 0; g < n; g++){
-      std::cout << "g " << g << " pivot " << pivot[g] << " temp " << temp[g];
-    }
-    std::cout << std::endl;
-
-    
     for (int j = 0; j < n; ++j){
       inverse[j * n + i] = temp[j];
     }
@@ -258,9 +274,9 @@ Matrix Matrix::ident(int n){
   for (int i = 0; i < n; ++i){
     for (int j = 0; j < n; ++j){
       if (i == j){
-	result[i * n + j] = 1;
+	result[j * n + i] = 1;
       } else{
-	result[i * n + j] = 0;
+	result[j * n + i] = 0;
       }
     }
   }
@@ -274,7 +290,7 @@ void Matrix::disp(){
   for (int i = 0; i < this->rows; ++i){
     //separates each column of the matrix by a space
     for (int j = 0; j < this->cols; ++j){
-      std::cout << this->array[i * this->rows + j] << " ";
+      std::cout << this->array[i * this->cols + j] << " ";
     }
     std::cout << std::endl;
   }
