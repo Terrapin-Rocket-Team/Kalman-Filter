@@ -4,7 +4,7 @@
 //Include all the filters and config
 #include "LinearKalmanFilter/LinearKalmanFilter.h"
 #include "LinearKalmanFilter/LinearKalmanFilter.cpp"
-#include "Config.h"
-#include "Config.cpp"
+#include "LinearKalmanFilter/Config.h"
+#include "LinearKalmanFilter/Config.cpp"
 
 #endif
