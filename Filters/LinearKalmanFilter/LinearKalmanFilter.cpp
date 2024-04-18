@@ -1,13 +1,13 @@
 #include "LinearKalmanFilter.h"
 #include "../../MatrixMult/Matrix.h"
 
-LinearKalmanFilter::LinearKalmanFilter(Matrix X, Matrix U, Matrix P, Matrix F, Matrix G, Matrix R){
-    state.X = X;
-    state.U = U;
-    state.P = P;
-    state.F = F;
-    state.G = G;
-    state.R = R;
+LinearKalmanFilter::LinearKalmanFilter(Config c){
+    state.X = c.X;
+    state.U = c.U;
+    state.P = c.P;
+    state.F = c.F;
+    state.G = c.G;
+    state.R = c.R;
     calculate_initial_values();
 }
 
@@ -38,14 +38,14 @@ void LinearKalmanFilter::calculate_initial_values(){
     covariance_extrapolate();
 }
 
-Matrix LinearKalmanFilter::iterate(Matrix measurement, Matrix control, Matrix F, Matrix G, Matrix H){
-    state.F = F;
-    state.G = G;
-    state.H = H;
-    state.U = control;
+Matrix LinearKalmanFilter::iterate(Config c){
+    state.F = c.F;
+    state.G = c.G;
+    state.H = c.H;
+    state.U = c.U;
     state.Q = (state.G*1.2*1.2)*state.G.T();
     calculate_kalman_gain();
-    estimate_state(measurement);
+    estimate_state(c.X);
     covariance_update();
     predict_state();
     covariance_extrapolate();

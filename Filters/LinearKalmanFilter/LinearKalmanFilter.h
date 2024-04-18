@@ -1,4 +1,5 @@
 #include "../../MatrixMult/Matrix.h"
+#include "Config.h"
 
 #ifndef LINEARKALMANFILTER_H
 #define LINEARKALMANFILTER_H
@@ -17,14 +18,14 @@ typedef struct {
 
 class LinearKalmanFilter{
     public: 
-        LinearKalmanFilter(Matrix X, Matrix U, Matrix P, Matrix F, Matrix G, Matrix R);
+        LinearKalmanFilter(Config c);
         void predict_state();
         void estimate_state(Matrix measurement);
         void calculate_kalman_gain();
         void covariance_update();
         void covariance_extrapolate();
         void calculate_initial_values();
-        Matrix iterate(Matrix measurement, Matrix control, Matrix F, Matrix G, Matrix H);
+        Matrix iterate(Config c);
     
     private:
         KFState state;
