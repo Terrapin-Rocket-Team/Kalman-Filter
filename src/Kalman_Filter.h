@@ -8,6 +8,5 @@
 
 //Include Matrix Mult
 #include "MatrixMult/Matrix.h"
-#include "MatrixMult/Matrix.cpp"
 
 #endif
